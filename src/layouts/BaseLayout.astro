@@ -4,9 +4,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import SideBar from "../components/SideBar.astro";
 import { ViewTransitions } from "astro:transitions";
-
 import { SITE_TITLE, SITE_DESCRIPTION, TRANSITION_API } from "../config";
-
 const {
   image,
   title = SITE_TITLE,
@@ -22,20 +20,93 @@ const {
   <head>
     <BaseHead title={title} description={description} image={image} , ogType={ogType} />
     {TRANSITION_API && <ViewTransitions />}
+    <style>
+      /* Fade in animation for main content */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Slide in animation for sidebar */
+      @keyframes slideIn {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(0); }
+      }
+
+      /* Smooth transition for drawer */
+      .drawer {
+        transition: transform 0.3s ease-in-out;
+      }
+
+      /* Animate main content */
+      main {
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      /* Animate sidebar */
+      .drawer-side {
+        animation: slideIn 0.5s ease-out;
+      }
+
+      /* Hover effect for interactive elements */
+      .hover-scale {
+        transition: transform 0.2s ease;
+      }
+      
+      .hover-scale:hover {
+        transform: scale(1.02);
+      }
+
+      /* Smooth page transitions */
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        animation-duration: 0.5s;
+      }
+    </style>
   </head>
   <body>
     <div class="bg-base-100 drawer lg:drawer-open">
       <input id="my-drawer" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content bg-base-100">
-        <Header title={SITE_TITLE} />
+        <Header title={SITE_TITLE} class="hover-scale" />
         <div class="md:flex md:justify-center">
           <main class="p-6 pt-10 lg:max-w-[900px] max-w-[100vw]">
             <slot />
           </main>
         </div>
-        <Footer />
+        <Footer class="hover-scale" />
       </div>
-      {includeSidebar && <SideBar sideBarActiveItemID={sideBarActiveItemID} />}
+      {includeSidebar && <SideBar sideBarActiveItemID={sideBarActiveItemID} class="drawer-side" />}
     </div>
+
+    <script>
+      // Add smooth scrolling behavior
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+
+      // Add intersection observer for scroll animations
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+
+      // Observe all main content sections
+      document.querySelectorAll('main > *').forEach((el) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+        observer.observe(el);
+      });
+    </script>
   </body>
 </html>
