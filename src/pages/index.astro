@@ -1,0 +1,52 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HorizontalCard from "../components/HorizontalCard.astro";
+import { getCollection } from "astro:content";
+import createSlug from "../lib/createSlug"
+
+const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const last_posts = posts.slice(0, 3);
+---
+
+<BaseLayout sideBarActiveItemID="home">
+  <div class="pb-12 mt-5">
+    <div class="text-xl py-1">Hey there 👋</div>
+    <div class="text-5xl font-bold">I'm Riyan Bayu Saputra</div>
+    <div class="text-3xl py-3 font-bold">Software Engineer </div>
+    <div class="py-2">
+      <text class="text-lg">
+       As a dedicated informatics engineering student with a passion for making real contributions to the advancement of technology. I have extensive experience in web development and machine learning, having worked on various full-stack web projects, as well as machine learning and deep learning model development.
+      </text>
+    </div>
+    <div class="mt-8">
+      <a class="btn" href=""https://www.linkedin.com/in/Riyan-Bayu/" target="_blank"> Let's connect!</a>
+      <a href="/CV Riyan BayuSaputra.pdf" download="CV Riyan BayuSaputra.pdf" class="btn btn-outline ml-5">
+        Get This CV
+      </a>
+    </div>
+  </div>
+
+  <div>
+    <div class="text-3xl w-full font-bold mb-2">My last projects {"</>"}</div>
+  </div>
+
+  <HorizontalCard
+    title="KerjaAyokerja"
+    img="/Project/1.png"
+    desc="Developing a job vacancy information platform using Laravel"
+    url="http://kerja.ayokerja.co/"
+  
+  />
+  <div class="divider my-0"></div>
+  <HorizontalCard
+    title="Sistem infornasi rumpun bidang infrastruktur pati"
+    img="/Project/2.png"
+    desc="SIRIWIL merupakan aplikasi digital untuk pemantauan sanitasi dan pengolahan limbah rumah tangga"
+    url="https://testerapp.minuta.id/"
+  />
+  <div class="divider my-0"></div>
+  
+
+  
+</BaseLayout>
